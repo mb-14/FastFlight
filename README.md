@@ -3,7 +3,7 @@
 ###Team Members:
 
 1. Miroojin Bakshi
-2. Sainath Bathala
+2. Sainath Batthala
 
 ###Instructions:
 

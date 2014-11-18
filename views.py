@@ -41,7 +41,10 @@ def login_google():
 
 @app.route('/selectflight', methods=['GET','POST'])
 def select_flight():
-    return render_template("select_flight.html")
+    from_city = City.query.filter_by(name=request.form['city_from']).first()
+    to_city = City.query.filter_by(name=request.form['city_to']).first()
+    flights = Flight.query.filter_by(from_city_id=from_city.id, to_city_id=to_city.id).all()
+    return render_template("select_flight.html", from_city=from_city, to_city=to_city, flights=flights)
 
 @app.route('/logout')
 def logout():
