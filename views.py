@@ -8,6 +8,7 @@ from authomatic.adapters import WerkzeugAdapter
 from authomatic import Authomatic
 from config import CONFIG
 from sqlalchemy import *
+from flask_weasyprint import HTML, render_pdf
 
 authomatic = Authomatic(CONFIG, 'abcde', report_errors=False)
 @app.route('/', methods=['GET', 'POST'])
@@ -57,21 +58,21 @@ def book(journey_id):
     flight = Flight.query.get(journey.flight_id)
     return render_template("book_flight.html",journey = journey,to_city= to_city,from_city=from_city,flight= flight,user = g.user)
 
-@app.route('/confirm/<int:journey_id>')
+@app.route('/confirm/<int:journey_id>',methods=['GET', 'POST'])
 def confirm(journey_id):
     journey = Journey.query.get(journey_id)
     from_city = City.query.get(journey.from_city_id)
     to_city = City.query.get(journey.to_city_id)
     flight = Flight.query.get(journey.flight_id)
-    subject = "FastFlight Booking Confirmation"
-    receiver = request.form['email']
-    mail_to_be_sent = Message(subject=subject, recipients=[receiver])
-    mail_to_be_sent.body = "Please find attached your flight ticket document. Thank you for using FastFlight"
-    html = render_template('pdf.html',name = request.form['name'],age=request.form['age'],journey=journey,from_city=from_city,to_city=to_city,flight=flight)
-    pdf = HTML(string = html).write_pdf()
-    mail_to_be_sent.attach("booking_confirmation.pdf", "application/pdf", pdf.getvalue())
-    mail_ext.send(mail_to_be_sent)
-    return render_template("confirm.html",email=request.form['email'],name=request.form['name'],age=request.form['age'])
+    #subject = "FastFlight Booking Confirmation"
+    #receiver = request.form['email']
+    #mail_to_be_sent = Message(subject=subject, recipients=[receiver])
+    #mail_to_be_sent.body = "Please find attached your flight ticket document. Thank you for using FastFlight"
+    #html = render_template('pdf.html',name = request.form['name'],age=request.form['age'],journey=journey,from_city=from_city,to_city=to_city,flight=flight)
+    #pdf = HTML(string = html).write_pdf()
+    #mail_to_be_sent.attach("booking_confirmation.pdf", "application/pdf", pdf.getvalue())
+    #mail_ext.send(mail_to_be_sent)
+    return render_template("confirm.html",journey = journey,email=request.form['email'],name=request.form['name'],age=request.form['age'])
 
 
 @app.route('/confirmpdf_<int:journey_id>')
@@ -80,7 +81,7 @@ def confirm_pdf(journey_id):
     from_city = City.query.get(journey.from_city_id)
     to_city = City.query.get(journey.to_city_id)
     flight = Flight.query.get(journey.flight_id)
-    html = render_template('pdf.html', name=name)
+    html = render_template('pdf.html', name = request.args['name'],age=request.args['age'],journey=journey,from_city=from_city,to_city=to_city,flight=flight)
     return render_pdf(HTML(string=html))
 
 @app.route('/logout')
