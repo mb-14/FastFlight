@@ -9,7 +9,7 @@ from authomatic import Authomatic
 from config import CONFIG
 from sqlalchemy import *
 from flask_weasyprint import HTML, render_pdf
-
+import smtplib
 authomatic = Authomatic(CONFIG, 'abcde', report_errors=False)
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -72,6 +72,19 @@ def confirm(journey_id):
     #pdf = HTML(string = html).write_pdf()
     #mail_to_be_sent.attach("booking_confirmation.pdf", "application/pdf", pdf.getvalue())
     #mail_ext.send(mail_to_be_sent)
+    fromaddr="admatfastflight@gmail.com"
+    toaddr=request.form['email'] 
+    msg ="""From: FastFlight <admatfastflight@gmail.com>
+To:<"""+toaddr+">"+"""
+Subject: Booking Successful
+
+This is a test e-mail message.
+"""
+    server = smtplib.SMTP("smtp.gmail.com:587")
+    server.starttls()
+    server.login("admatfastflight@gmail.com","dudeflyfast")
+    server.sendmail(fromaddr,toaddr,msg)
+    server.quit()     
     return render_template("confirm.html",journey = journey,email=request.form['email'],name=request.form['name'],age=request.form['age'])
 
 
