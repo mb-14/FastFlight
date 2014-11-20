@@ -78,6 +78,7 @@ def confirm(journey_id):
 @app.route('/confirmpdf_<int:journey_id>')
 def confirm_pdf(journey_id):
     journey = Journey.query.get(journey_id)
+    print journey.flight_id
     from_city = City.query.get(journey.from_city_id)
     to_city = City.query.get(journey.to_city_id)
     flight = Flight.query.get(journey.flight_id)
