@@ -9,7 +9,6 @@ class User(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     email = db.Column('email', db.String(20))
     username = db.Column('username', db.String(50))
-    timestamp = db.Column(db.TIMESTAMP, server_default=db.text('CURRENT_TIMESTAMP'))
 
     def __init__(self, email, username):
         self.email = email
@@ -39,19 +38,30 @@ class Flight(db.Model):
     __tablename__ = "flight"
     id = db.Column(db.Integer , primary_key=True)
     name = db.Column('name', db.String(20))
-    from_city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
-    to_city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
-
-    def __init__(self, name, from_city_id, to_city_id):
+    max_seats = db.Column('max_seats',db.Integer)
+    
+    def __init__(self, name, max_seats):
         self.name = name
-        self.from_city_id = from_city_id
-        self.to_city_id = to_city_id
+        self.max_seats = max_seats
+
 
 class Journey(db.Model):
     __tablename__ = "journey"
     id = db.Column(db.Integer , primary_key=True)
-    timestamp = db.Column(db.TIMESTAMP, server_default=db.text('CURRENT_TIMESTAMP'))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date_time = db.Column(db.DateTime)   
     flight_id = db.Column(db.Integer, db.ForeignKey('flight.id'))
+    from_city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
+    to_city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
+    fare = db.Column(db.Integer)
 
-    # def __init__(self, )
+    def __init__(self, date_time ,from_city_id , to_city_id , flight_id, fare):
+        self.date_time = datetime.strptime(date_time, '%d-%m-%Y %I:%M%p')
+        self.from_city_id = from_city_id
+        self.to_city_id = to_city_id
+        self.flight_id = flight_id
+        self.fare = fare
+
+class Book(db.Model):
+    __tablename__ = "book"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer,db.ForeignKey('user.id'))

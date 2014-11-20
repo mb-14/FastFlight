@@ -10,13 +10,14 @@ if __name__ == '__main__':
 		app.run()
 	elif argv[1] == 'initdb':
 		from testdata import *
+		db.session.commit()		
 		with app.app_context():
 			db.drop_all()
 			db.create_all()
-			for u in users:
-				db.session.add(User(u['email'], u['name']))
 			for u in cities:
 				db.session.add(City(u['name']))
 			for u in flights:
-				db.session.add(Flight(u['name'], u['from_city_id'], u['to_city_id']))
+				db.session.add(Flight(u['name'], u['max_seats']))
+			for u in journeys:
+				db.session.add(Journey(u['date'], u['from_city_id'],u['to_city_id'],u['flight_id'],u['fare']))		
 			db.session.commit()

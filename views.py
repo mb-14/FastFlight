@@ -7,6 +7,7 @@ from functools import wraps
 from authomatic.adapters import WerkzeugAdapter
 from authomatic import Authomatic
 from config import CONFIG
+from sqlalchemy import *
 
 authomatic = Authomatic(CONFIG, 'abcde', report_errors=False)
 @app.route('/', methods=['GET', 'POST'])
@@ -43,8 +44,9 @@ def login_google():
 def select_flight():
     from_city = City.query.filter_by(name=request.form['city_from']).first()
     to_city = City.query.filter_by(name=request.form['city_to']).first()
-    flights = Flight.query.filter_by(from_city_id=from_city.id, to_city_id=to_city.id).all()
-    return render_template("select_flight.html", from_city=from_city, to_city=to_city, flights=flights)
+    print request.form['date']
+    journeys = db.session.query(Flight,Journey).join(Journey).filter(and_(Journey.from_city_id==from_city.id,Journey.to_city_id==to_city.id, func.strftime('%d-%m-%Y',Journey.date_time) == request.form['date'])).all()
+    return render_template("select_flight.html", from_city=from_city, to_city=to_city,journeys =journeys)
 
 @app.route('/logout')
 def logout():

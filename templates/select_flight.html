@@ -5,8 +5,8 @@
     <h3>Select flight:</h3>
     <table class="table">
     	<tr><th>Name</th><th>Day</th></tr>
-	    {% for flight in flights %}
-	    	<tr><td>{{ flight.name }}</td><td></td></tr>
+	    {% for journey in journeys %}
+	    	<tr><td>{{ journey.Flight.name }}</td><td></td></tr>
 	    {% endfor %}
 	</table>
 </div>
