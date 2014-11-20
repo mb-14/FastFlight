@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container">
+    <h3>Book Flight</h3>
+   <h3>{{flight.name}}</h3>
+	<h4><b>{{from_city.name}}</b> to <b>{{to_city.name}}</b></h4>
+	<h4>{{journey.date_time.strftime('%d-%m-%Y %I:%M%p')}}</h4>
+	<h4>Fare: <b>Rs. {{journey.fare}} </b></h4>
+  <form role="form"  class="form-horizontal" action="/confirm/{{journey.id}}" method='post'>
+	<div class="row">
+  <div class="col-lg-5">
+ <label>Name:</label>
+      <input type="text" name="name" class="form-control" placeholder="Enter name" value="{{user.username}}" required>
+  </div><!-- /.col-lg-6 -->
+
+  <div class="col-lg-5">
+ <label>Age:</label>
+      <input type="text" name="age" class="form-control" placeholder="Enter age" required>
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+<br>
+<div class="row" >
+    <div class="col-lg-5">
+ <label>Email ID:</label>
+      <input type="text" name="email" class="form-control" placeholder="Enter email id" value="{{user.email}}" required>
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+<br>
+<div class="row">
+<div class="col-lg-4">
+ <button type="submit" class="btn btn-lg btn-success">Confirm</button>
+</div>
+</div>
+</form> 
+</div>
+{% endblock %}

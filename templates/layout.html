@@ -41,9 +41,6 @@ body {
                             <li class="navbar-text">Welcome, {{g.user.username}}</li>
 							<li><div><a href="{{ url_for('logout') }}" class="btn navbar-btn btn-danger">Sign out</a></div></li>
 						{% endif %}
-						{% if not g.user.is_authenticated()%}
-							<li {% if request.path == "/login" %}class="active"{% endif %}><div><a class="btn navbar-btn btn-success" href="{{ url_for('login') }}">Sign in</a></div></li>
-						{% endif %}
 					</ul>
 				</div>
 				<!--/.nav-collapse -->

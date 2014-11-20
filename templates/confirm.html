@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container">
+<br><br>
+<div class="row"><div class="center-block" style="width:400px;text-align:center">
+<h3>Congratulations! Your ticket has been booked.</h3>
+<h4>A copy of your ticket has been sent to your email-id : <b>{{email}}</b></h3>
+<h4>You can also download a copy from <a href="/confirmpdf_{{}}?name={{name}}&age={{age}}">here.</a> 
+</div></div>
+</div>
+
+{% endblock %}

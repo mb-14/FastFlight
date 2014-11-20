@@ -40,13 +40,48 @@ def login_google():
         return redirect(request.args.get('next') or url_for('index'))
     return response
 
-@app.route('/selectflight', methods=['GET','POST'])
+@app.route('/selectflight',methods=['GET', 'POST'])
 def select_flight():
     from_city = City.query.filter_by(name=request.form['city_from']).first()
     to_city = City.query.filter_by(name=request.form['city_to']).first()
     print request.form['date']
     journeys = db.session.query(Flight,Journey).join(Journey).filter(and_(Journey.from_city_id==from_city.id,Journey.to_city_id==to_city.id, func.strftime('%d-%m-%Y',Journey.date_time) == request.form['date'])).all()
     return render_template("select_flight.html", from_city=from_city, to_city=to_city,journeys =journeys)
+
+
+@app.route('/book/<int:journey_id>')
+def book(journey_id):
+    journey = Journey.query.get(journey_id)
+    from_city = City.query.get(journey.from_city_id)
+    to_city = City.query.get(journey.to_city_id)
+    flight = Flight.query.get(journey.flight_id)
+    return render_template("book_flight.html",journey = journey,to_city= to_city,from_city=from_city,flight= flight,user = g.user)
+
+@app.route('/confirm/<int:journey_id>')
+def confirm(journey_id):
+    journey = Journey.query.get(journey_id)
+    from_city = City.query.get(journey.from_city_id)
+    to_city = City.query.get(journey.to_city_id)
+    flight = Flight.query.get(journey.flight_id)
+    subject = "FastFlight Booking Confirmation"
+    receiver = request.form['email']
+    mail_to_be_sent = Message(subject=subject, recipients=[receiver])
+    mail_to_be_sent.body = "Please find attached your flight ticket document. Thank you for using FastFlight"
+    html = render_template('pdf.html',name = request.form['name'],age=request.form['age'],journey=journey,from_city=from_city,to_city=to_city,flight=flight)
+    pdf = HTML(string = html).write_pdf()
+    mail_to_be_sent.attach("booking_confirmation.pdf", "application/pdf", pdf.getvalue())
+    mail_ext.send(mail_to_be_sent)
+    return render_template("confirm.html",email=request.form['email'],name=request.form['name'],age=request.form['age'])
+
+
+@app.route('/confirmpdf_<int:journey_id>')
+def confirm_pdf(journey_id):
+    journey = Journey.query.get(journey_id)
+    from_city = City.query.get(journey.from_city_id)
+    to_city = City.query.get(journey.to_city_id)
+    flight = Flight.query.get(journey.flight_id)
+    html = render_template('pdf.html', name=name)
+    return render_pdf(HTML(string=html))
 
 @app.route('/logout')
 def logout():
