@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
 <div id="main" class="container">
-	Flights from {{ from_city.name }} to {{ to_city.name }}
-    <h3>Select flight:</h3>
-  <table id="doc_table" class="tablesorter">
+	  <table id="doc_table" class="tablesorter">
 <thead>    
   <tr>
-        <th>Name
+        <th>Flight Name
         <th>Fare
-		<th>Departure Time
-		<th>Available Seats
-		<th>Book
+		<th>Departure Date & Time
+        <th>Passengner
+		<th>From
+        <th>To
+        <th>Cancel
 	  </tr>
  </thead>
 <tfoot>
@@ -32,18 +32,25 @@
 		</tr>
 	</tfoot>
 <tbody>
-      {%- for journey in journeys %}
+      {%- for result in results %}
       <tr>
-        <td>{{ journey.Flight.name }}
-        <td>Rs. {{ journey.Journey.fare }}
-        <td>{{ journey.Journey.date_time.strftime('%I:%M %p') }}
-        <td>{{ journey.Journey.available() }}
-		<td><a href="/book/{{journey.Journey.id}}" class="btn btn-large btn-primary"><span class="glyphicon glyphicon-arrow-right"></span>Book</a>
+        <td>{{ result.Flight.name }}
+        <td>Rs. {{ result.Journey.fare }}
+        <td>{{ result.Journey.date_time.strftime('%d-%m-%Y %I:%M %p') }}
+        <td>{{ result.Book.name}}
+        <td>{{ result.from_city.name }}
+        <td>{{ result.to_city.name }}
+        {%- if not result.Journey.expired() %} 
+		<td><a href="/cancel/{{result.Book.id}}" class="btn btn-large btn-warning"><span class="glyphicon glyphicon-arrow-right"></span>Cancel</a>
+        {%- else -%}
+        <td></td>
+        {%- endif -%}
 		</tr>
       {%- endfor %}
 </tbody>
     </table>
    <div class="pagination"></div>
+</div>
 </div>
 <script>
 $(document).ready(function() { // assuming the table will exist at document.ready
@@ -62,12 +69,17 @@ $(document).ready(function() { // assuming the table will exist at document.read
   });
 
  $("table thead th:eq(0)").data("sorter", false);
+ $("table thead th:eq(1)").data("sorter", false);
+ $("table thead th:eq(2)").data("sorter", false);
+ $("table thead th:eq(3)").data("sorter", false);
  $("table thead th:eq(4)").data("sorter", false);
- $("table thead th:eq(4)").data("filter", false);
+ $("table thead th:eq(5)").data("sorter", false);
+ $("table thead th:eq(6)").data("sorter", false);
+ $("table thead th:eq(6)").data("filter", false);
   $("table").tablesorter({
     theme : "bootstrap",
     widthFixed: true,
-    sortList: [1],
+    sortList: [2],
     headerTemplate : '{content} {icon}', 
     widgets : [ "uitheme", "filter"],
     widgetOptions : {

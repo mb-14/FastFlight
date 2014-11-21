@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form role="form" class="form-horizontal" action="" method=post>
+	<h2>Cancel Ticket</h2>
+	 <div>
+     <b>Ticket ID:</b> {{booking.id}}<br>
+	 <b>Name:</b> {{booking.name}}<br>
+	 <b>Age:</b> {{booking.age}}<br>
+<br>
+	</div>		  
+         <div class="form-group">
+    <div class="col-sm-10">
+      <button type="submit" class="btn btn-success">Cancel</button>
+    </div>
+  </div>
+
+  </form>
+{% endblock %}

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 from app import app
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -61,7 +61,25 @@ class Journey(db.Model):
         self.flight_id = flight_id
         self.fare = fare
 
+    def expired(self):
+        today = datetime.now() - timedelta(hours=12)
+        return today > self.date_time
+
+    def available(self):
+        booked = Book.query.filter_by(journey_id = self.id).count()
+        flight = Flight.query.get(self.flight_id)
+        return flight.max_seats - booked
+
 class Book(db.Model):
     __tablename__ = "book"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
+    journey_id = db.Column(db.Integer,db.ForeignKey('journey.id'))
+    name = db.Column(db.String(20))
+    age = db.Column(db.Integer)
+
+    def __init__(self,user_id,journey_id,name,age):
+        self.user_id = user_id
+        self.journey_id = journey_id
+        self.name = name
+        self.age = age
